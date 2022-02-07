@@ -5,7 +5,7 @@ import { INodeTree } from './components/Nodes';
 
 const App = () => {
 
-  const [nodes, setNodes] = useState<Array<INodeTree> | null>()
+  const [nodes, setNodes] = useState<INodeTree[]>()
 
   useEffect(() => {
     const getData = async() => {
@@ -16,11 +16,33 @@ const App = () => {
     getData()
   }, [])
 
-  console.log(nodes)
+
+  const NodeTree = (nodes:INodeTree) => {
+    return (
+      <div>
+       {nodes.nodesChild.map((node, index) => 
+          <ul key={node.id}>
+            <li>
+              {node.name}
+              {node.nodesChild.length > 0 && <NodeTree id={node.id} parentId={node.parentId} name={node.name} nodesChild={node.nodesChild} />}
+            </li>
+          </ul>
+       )}
+      </div>
+    )
+  }
 
   return (
     <div className="App">
       <h1>Tree manager</h1>
+        {nodes?.map((node, index) =>
+          <ul key={node.id}>
+            <li>
+              {node.name}
+              {node.nodesChild.length > 0 && <NodeTree id={node.id} parentId={node.parentId} name={node.name} nodesChild={node.nodesChild} />}
+            </li>
+          </ul>
+        )}
     </div>
   );
 }

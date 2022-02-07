@@ -4,6 +4,9 @@ export interface INodes {
     name: string;
 }
 
-export interface INodeTree extends INodes {
-    nodesChild: Array<INodes>
+export interface INodeTree {
+    id: number;
+    parentId: number;
+    name: string;
+    nodesChild: Array<INodeTree>
 }
