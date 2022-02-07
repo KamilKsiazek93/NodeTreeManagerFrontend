@@ -1,16 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import { webAPIUrl } from './components/AppSettings';
+import { INodeTree } from './components/Nodes';
 
 const App = () => {
 
-  const getData = () => {
-    fetch(`${webAPIUrl}/nodes`)
-  .then(response => response.json())
-  .then(data => console.log(data));
-  }
+  const [nodes, setNodes] = useState<Array<INodeTree> | null>()
 
-  getData()
+  useEffect(() => {
+    const getData = async() => {
+        fetch(`${webAPIUrl}/nodes`)
+          .then(response => response.json())
+          .then(data => setNodes(data));
+    }
+    getData()
+  }, [])
+
+  console.log(nodes)
 
   return (
     <div className="App">
