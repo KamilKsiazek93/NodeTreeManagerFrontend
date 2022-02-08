@@ -44,9 +44,9 @@ const App = () => {
     setNodeParentId(event.target.value)
   }
 
-  const addNodeToDB = () => {
+  const addNodeToDB = async() => {
     const data:INodes = {id: 0, parentId: nodeParentId, name: nodeName}
-    fetch(`${webAPIUrl}/nodes`, {
+    await fetch(`${webAPIUrl}/nodes`, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json', 
@@ -79,10 +79,10 @@ const App = () => {
     setNodeName(findingNodeName)
   }
   
-  const editNodeToDB = () => {
+  const editNodeToDB = async() => {
     const data:INodes = {id: nodeId, parentId: nodeParentId, name: nodeName};
 
-    fetch(`${webAPIUrl}/nodes/${nodeId}`, {
+    await fetch(`${webAPIUrl}/nodes/${nodeId}`, {
       method: 'put',
       headers: {
         'Content-Type': 'application/json', 
@@ -102,17 +102,17 @@ const App = () => {
     setNodeId(parseInt(id))
   }
 
-  const deleteNodeFromDB = () => {
+  const deleteNodeFromDB = async() => {
     if(nodeId !== 0) {
-      fetch(`${webAPIUrl}/nodes/${nodeId}`, {
+      await fetch(`${webAPIUrl}/nodes/${nodeId}`, {
         method: 'delete',
         headers: {
           'Content-Type': 'application/json', 
         },
         body: JSON.stringify({id: nodeId})
       })
-      handleCloseDelete();
       setStateUpdater(stateUpdater+1)
+      handleCloseDelete();
     }
   }
 
