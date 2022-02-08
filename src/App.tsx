@@ -17,6 +17,9 @@ const App = () => {
   const [showEdit, setShowEdit] = useState(false);
   const handleCloseEdit = () => setShowEdit(false);
   const handleShowEdit = () => setShowEdit(true);
+  const [showDelete, setShowDelete] = useState(false);
+  const handleCloseDelete = () => setShowDelete(false);
+  const handleShowDelete = () => setShowDelete(true);
   const [stateUpdater, setStateUpdater] = useState(0)
 
   useEffect(() => {
@@ -80,6 +83,28 @@ const App = () => {
 
     handleCloseEdit()
     setStateUpdater(stateUpdater+1)
+  }
+
+  const handleDeleteNode = () => {
+    handleShowDelete()
+  }
+
+  const handleEditDeletingId = (id:string) => {
+    setNodeId(parseInt(id))
+  }
+
+  const deleteNodeFromDB = () => {
+    if(nodeId !== 0) {
+      fetch(`${webAPIUrl}/nodes/${nodeId}`, {
+        method: 'delete',
+        headers: {
+          'Content-Type': 'application/json', 
+        },
+        body: JSON.stringify({id: nodeId})
+      })
+      handleCloseDelete();
+      setStateUpdater(stateUpdater+1)
+    }
   }
 
   const NodeTree = (nodes:INodeTree) => {
@@ -167,13 +192,40 @@ const App = () => {
             <Button variant="secondary" onClick={handleCloseEdit}>
                 Zamknij
             </Button>
-            <Button variant="primary"onClick={(e) => editNodeToDB()}>Dodaj</Button>
+            <Button variant="warning"onClick={(e) => editNodeToDB()}>Edytuj</Button>
+            </Modal.Footer>
+        </Modal>
+
+        <Modal
+            show={showDelete}
+            onHide={handleCloseDelete}
+            backdrop="static"
+            keyboard={false}
+        >
+            <Modal.Header closeButton>
+            <Modal.Title>Usuń element</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                Wybierz element do usunięcia
+                <select id="selectObstacleName" onChange={(e) => handleEditDeletingId(e.target.value)}>
+                    <option defaultValue="" >Wybierz element do edycji</option>
+                    {nodeNames?.map((name, index) => 
+                        <option value={name.id} key={index}>{name.name}</option>
+                    )}
+                </select>
+            </Modal.Body>
+            <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseDelete}>
+                Zamknij
+            </Button>
+            <Button variant="danger"onClick={(e) => deleteNodeFromDB()}>Usuń</Button>
             </Modal.Footer>
         </Modal>
 
         <div>
           <Button variant='success' onClick={handleAddNode}>Dodaj element</Button>
           <Button variant="warning" onClick={handleEditNode} >Edytuj element</Button>
+          <Button variant="danger" onClick={handleDeleteNode}>Usuń element</Button>
         </div>
     </div>
   );
