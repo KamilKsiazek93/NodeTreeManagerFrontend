@@ -116,17 +116,33 @@ const App = () => {
     }
   }
 
+  const handleShowHide = (name:string) => {
+    let items = document.querySelectorAll(`.${name}`)
+    for(let i = 0; i < items.length; i++) {
+      let element = items[i]
+
+      if(!element.hasAttribute("style") || element.getAttribute("style")==="display:list-item") {
+        element.setAttribute("style", "display:none")
+      } else {
+        element.setAttribute("style", "display:list-item")
+      }
+     
+    }
+  }
+
   const NodeTree = (nodes:INodeTree) => {
     return (
       <div>
-       {nodes.nodesChild.map((node) => 
-          <ul key={node.id}>
-            <li>
-              {node.name}
+       
+          <ul >
+          {nodes.nodesChild.map((node) => 
+            <li className={nodes.name} key={node.name}>
+              {node.name} {node.nodesChild.length > 0 && <Button onClick={(e) => handleShowHide(node.name)} >+/-</Button>}
               {node.nodesChild.length > 0 && <NodeTree id={node.id} parentId={node.parentId} name={node.name} nodesChild={node.nodesChild} />}
             </li>
+            )}
           </ul>
-       )}
+       
       </div>
     )
   }
@@ -134,14 +150,16 @@ const App = () => {
   return (
     <div className="App">
       <h1>Tree manager</h1>
-        {nodes?.map((node) =>
-          <ul key={node.id}>
-            <li>
-              {node.name}
+        
+          <ul>
+          {nodes?.map((node) =>
+            <li key={node.name}>
+              {node.name} {node.nodesChild.length > 0 && <Button onClick={(e) => handleShowHide(node.name)} >+/-</Button>}
               {node.nodesChild.length > 0 && <NodeTree id={node.id} parentId={node.parentId} name={node.name} nodesChild={node.nodesChild} />}
             </li>
+            )}
           </ul>
-        )}
+        
 
         <Modal
             show={show}
