@@ -10,9 +10,13 @@ const App = () => {
   const [nodeNames, setNodeNames] = useState<INodeNames[]>()
   const [nodeName, setNodeName] = useState("")
   const [nodeParentId, setNodeParentId] = useState(0)
+  const [nodeId, setNodeId] = useState(0)
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const [showEdit, setShowEdit] = useState(false);
+  const handleCloseEdit = () => setShowEdit(false);
+  const handleShowEdit = () => setShowEdit(true);
   const [stateUpdater, setStateUpdater] = useState(0)
 
   useEffect(() => {
@@ -27,9 +31,8 @@ const App = () => {
     getData()
   }, [stateUpdater])
 
-  const handleNewNodeName = (event:any) => {
-    event.preventDefault()
-    setNodeName(event.target.value)
+  const handleNewNodeName = (name:string) => {
+    setNodeName(name)
   }
 
   const handleNewNodeParent = (event:any) => {
@@ -54,6 +57,30 @@ const App = () => {
     handleShow()
   }
 
+  const handleEditNode = () => {
+    handleShowEdit()
+  }
+
+  const handleEditElement = (id:string) => {
+    setNodeId(parseInt(id))
+    var findingNode = nodeNames?.filter(item => item.id === parseInt(id))[0].name ?? ""
+    setNodeName(findingNode)
+  }
+  
+  const editNodeToDB = () => {
+    const data:INodes = {id: nodeId, parentId: nodeParentId, name: nodeName};
+
+    fetch(`${webAPIUrl}/nodes/${nodeId}`, {
+      method: 'put',
+      headers: {
+        'Content-Type': 'application/json', 
+      },
+      body: JSON.stringify(data)
+    })
+
+    handleCloseEdit()
+    setStateUpdater(stateUpdater+1)
+  }
 
   const NodeTree = (nodes:INodeTree) => {
     return (
@@ -81,6 +108,7 @@ const App = () => {
             </li>
           </ul>
         )}
+
         <Modal
             show={show}
             onHide={handleClose}
@@ -92,7 +120,7 @@ const App = () => {
             </Modal.Header>
             <Modal.Body>
                 Podaj nazwę elementu:
-                <Form.Control type="text" onChange={handleNewNodeName}/> <br />
+                <Form.Control type="text" onChange={(e) => handleNewNodeName(e.target.value)}/> <br />
                 <select id="selectObstacleName" onChange={handleNewNodeParent}>
                         <option defaultValue="" >Wybierz element nadrzędny</option>
                         {nodeNames?.map((name, index) => 
@@ -107,8 +135,45 @@ const App = () => {
             <Button variant="primary"onClick={(e) => addNodeToDB()}>Dodaj</Button>
             </Modal.Footer>
         </Modal>
+
+        <Modal
+            show={showEdit}
+            onHide={handleCloseEdit}
+            backdrop="static"
+            keyboard={false}
+        >
+            <Modal.Header closeButton>
+            <Modal.Title>Edytuj element</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                Wybierz element do edycji:
+                <select id="selectObstacleName" onChange={(e) => handleEditElement(e.target.value)}>
+                    <option defaultValue="" >Wybierz element do edycji</option>
+                    {nodeNames?.map((name, index) => 
+                        <option value={name.id} key={index}>{name.name}</option>
+                    )}
+                </select>
+                <br/>
+                Podaj nową nazwę:
+                <Form.Control type='text' id="editNodeName" value={nodeName} onChange={(e) => handleNewNodeName(e.target.value)} />
+                <select id="selectObstacleName" onChange={handleNewNodeParent}>
+                    <option defaultValue="" >Wybierz element nadrzędny</option>
+                    {nodeNames?.map((name, index) => 
+                        <option value={name.id} key={index}>{name.name}</option>
+                    )}
+                </select>
+            </Modal.Body>
+            <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseEdit}>
+                Zamknij
+            </Button>
+            <Button variant="primary"onClick={(e) => editNodeToDB()}>Dodaj</Button>
+            </Modal.Footer>
+        </Modal>
+
         <div>
           <Button variant='success' onClick={handleAddNode}>Dodaj element</Button>
+          <Button variant="warning" onClick={handleEditNode} >Edytuj element</Button>
         </div>
     </div>
   );
