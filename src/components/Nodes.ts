@@ -7,8 +7,3 @@ export interface INodes {
 export interface INodeTree extends INodes {
     nodesChild: Array<INodeTree>
 }
-
-export interface INodeNames {
-    id: number;
-    name: string;
-}

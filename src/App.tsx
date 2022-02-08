@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import { webAPIUrl } from './components/AppSettings';
-import { INodeNames, INodes, INodeTree } from './components/Nodes';
+import { INodes, INodeTree } from './components/Nodes';
 import { Button, Form, Modal } from 'react-bootstrap';
 
 const App = () => {
 
   const [nodes, setNodes] = useState<INodeTree[]>()
-  const [nodeNames, setNodeNames] = useState<INodeNames[]>()
+  const [nodeNames, setNodeNames] = useState<INodes[]>()
   const [nodeName, setNodeName] = useState("")
   const [nodeParentId, setNodeParentId] = useState(0)
+  const [parentNodeName, setParentNodeName] = useState("")
   const [nodeId, setNodeId] = useState(0)
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -66,8 +67,16 @@ const App = () => {
 
   const handleEditElement = (id:string) => {
     setNodeId(parseInt(id))
-    var findingNode = nodeNames?.filter(item => item.id === parseInt(id))[0].name ?? ""
-    setNodeName(findingNode)
+    const findingNodeName = nodeNames?.filter(item => item.id === parseInt(id))[0].name ?? ""
+    const findingNodeParentId = nodeNames?.filter(item => item.id === parseInt(id))[0].parentId ?? 0
+    const parentNode = nodeNames?.filter(item => item.id === findingNodeParentId) ?? []
+    if(parentNode?.length > 0) {
+      setParentNodeName(parentNode[0].name)
+    } else {
+      setParentNodeName("")
+    }
+    setNodeParentId(findingNodeParentId)
+    setNodeName(findingNodeName)
   }
   
   const editNodeToDB = () => {
@@ -181,8 +190,9 @@ const App = () => {
                 <br/>
                 Podaj nową nazwę:
                 <Form.Control type='text' id="editNodeName" value={nodeName} onChange={(e) => handleNewNodeName(e.target.value)} />
+                Wybierz element nadrzędny<br />
                 <select id="selectObstacleName" onChange={handleNewNodeParent}>
-                    <option defaultValue="" >Wybierz element nadrzędny</option>
+                    <option value={nodeParentId} >{parentNodeName}</option>
                     {nodeNames?.map((name, index) => 
                         <option value={name.id} key={index}>{name.name}</option>
                     )}
