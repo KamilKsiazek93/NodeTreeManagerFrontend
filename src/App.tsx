@@ -3,6 +3,9 @@ import './App.css';
 import { webAPIUrl } from './components/AppSettings';
 import { INodes, INodeTree } from './components/Nodes';
 import { Button, Form, Modal } from 'react-bootstrap';
+import { handleSortNode } from './components/Sort';
+import { handleShowHide } from './components/ShowHide';
+import { NodeTree } from './components/NodeTree';
 
 const App = () => {
 
@@ -116,45 +119,21 @@ const App = () => {
     }
   }
 
-  const handleShowHide = (name:string) => {
-    let items = document.querySelectorAll(`.${name}`)
-    for(let i = 0; i < items.length; i++) {
-      let element = items[i]
-
-      if(!element.hasAttribute("style") || element.getAttribute("style")==="display:list-item") {
-        element.setAttribute("style", "display:none")
-      } else {
-        element.setAttribute("style", "display:list-item")
-      }
-     
-    }
-  }
-
-  const NodeTree = (nodes:INodeTree) => {
-    return (
-      <div>
-       
-          <ul >
-          {nodes.nodesChild.map((node) => 
-            <li className={nodes.name} key={node.name}>
-              {node.name} {node.nodesChild.length > 0 && <Button onClick={(e) => handleShowHide(node.name)} >+/-</Button>}
-              {node.nodesChild.length > 0 && <NodeTree id={node.id} parentId={node.parentId} name={node.name} nodesChild={node.nodesChild} />}
-            </li>
-            )}
-          </ul>
-       
-      </div>
-    )
-  }
-
   return (
     <div className="App">
       <h1>Tree manager</h1>
+
+        <div>
+          <Button variant='success' onClick={handleAddNode}>Dodaj element</Button>
+          <Button variant="warning" onClick={handleEditNode} >Edytuj element</Button>
+          <Button variant="danger" onClick={handleDeleteNode}>Usuń element</Button>
+        </div>
         
           <ul>
           {nodes?.map((node) =>
             <li key={node.name}>
               {node.name} {node.nodesChild.length > 0 && <Button onClick={(e) => handleShowHide(node.name)} >+/-</Button>}
+              {node.nodesChild.length > 0 && <Button onClick={(e) => handleSortNode(node.name)} >Sortuj</Button>}
               {node.nodesChild.length > 0 && <NodeTree id={node.id} parentId={node.parentId} name={node.name} nodesChild={node.nodesChild} />}
             </li>
             )}
@@ -249,12 +228,6 @@ const App = () => {
             <Button variant="danger"onClick={(e) => deleteNodeFromDB()}>Usuń</Button>
             </Modal.Footer>
         </Modal>
-
-        <div>
-          <Button variant='success' onClick={handleAddNode}>Dodaj element</Button>
-          <Button variant="warning" onClick={handleEditNode} >Edytuj element</Button>
-          <Button variant="danger" onClick={handleDeleteNode}>Usuń element</Button>
-        </div>
     </div>
   );
 }
