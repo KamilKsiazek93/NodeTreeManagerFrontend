@@ -3,6 +3,9 @@ import './App.css';
 import { webAPIUrl } from './components/AppSettings';
 import { INodes, INodeTree } from './components/Nodes';
 import { Button, Form, Modal } from 'react-bootstrap';
+import { handleSortNode } from './components/Sort';
+import { handleShowHide } from './components/ShowHide';
+import { NodeTree } from './components/NodeTree';
 
 const App = () => {
 
@@ -116,45 +119,55 @@ const App = () => {
     }
   }
 
-  const handleShowHide = (name:string) => {
-    let items = document.querySelectorAll(`.${name}`)
-    for(let i = 0; i < items.length; i++) {
-      let element = items[i]
-
-      if(!element.hasAttribute("style") || element.getAttribute("style")==="display:list-item") {
-        element.setAttribute("style", "display:none")
-      } else {
-        element.setAttribute("style", "display:list-item")
-      }
-     
+  const handleSortSelect = () => {
+    let sortOption = document.getElementById('sortSelect') as HTMLInputElement
+    if(sortOption.value !== "") {
+      const findingNodeName = nodeNames?.filter(item => item.id === parseInt(sortOption.value))[0].name ?? ""
+      handleSortNode(findingNodeName+sortOption.value)
+      sortOption.value = ""
     }
   }
 
-  const NodeTree = (nodes:INodeTree) => {
-    return (
-      <div>
-       
-          <ul >
-          {nodes.nodesChild.map((node) => 
-            <li className={nodes.name} key={node.name}>
-              {node.name} {node.nodesChild.length > 0 && <Button onClick={(e) => handleShowHide(node.name)} >+/-</Button>}
-              {node.nodesChild.length > 0 && <NodeTree id={node.id} parentId={node.parentId} name={node.name} nodesChild={node.nodesChild} />}
-            </li>
-            )}
-          </ul>
-       
-      </div>
-    )
+  const handleShowHideSelect = () => {
+    let showHideOption = document.getElementById('showHideSelect') as HTMLInputElement
+    if(showHideOption.value !== "") {
+      const findingNodeName = nodeNames?.filter(item => item.id === parseInt(showHideOption.value))[0].name ?? ""
+      handleShowHide(findingNodeName+showHideOption.value)
+      showHideOption.value = ""
+    }
   }
 
   return (
     <div className="App">
       <h1>Tree manager</h1>
+
+        <div>
+          <Button variant='success' onClick={handleAddNode}>Dodaj element</Button>
+          <Button variant="warning" onClick={handleEditNode} >Edytuj element</Button>
+          <Button variant="danger" onClick={handleDeleteNode}>Usuń element</Button>
+        </div>
+        <div>Wybierz węzeł do posortowania
+          <select id="sortSelect" onClick={handleSortSelect}>
+              <option defaultValue="" ></option>
+              {nodeNames?.map((name, index) => 
+                  <option value={name.id} key={index}>{name.name}</option>
+              )}
+          </select>
+        </div>
+        <div id='showHide'>Wybierz węzeł do zwinięcia / rozwinięcia
+          <select id="showHideSelect" onChange={handleShowHideSelect}>
+              <option defaultValue="" ></option>
+              {nodeNames?.map((name, index) => 
+                  <option value={name.id} key={index}>{name.name}</option>
+              )}
+          </select>
+        </div>
         
           <ul>
           {nodes?.map((node) =>
             <li key={node.name}>
-              {node.name} {node.nodesChild.length > 0 && <Button onClick={(e) => handleShowHide(node.name)} >+/-</Button>}
+              {node.name}
+              
               {node.nodesChild.length > 0 && <NodeTree id={node.id} parentId={node.parentId} name={node.name} nodesChild={node.nodesChild} />}
             </li>
             )}
@@ -173,12 +186,12 @@ const App = () => {
             <Modal.Body>
                 Podaj nazwę elementu:
                 <Form.Control type="text" onChange={(e) => handleNewNodeName(e.target.value)}/> <br />
-                <select id="selectObstacleName" onChange={handleNewNodeParent}>
-                        <option defaultValue="" >Wybierz element nadrzędny</option>
-                        {nodeNames?.map((name, index) => 
-                            <option value={name.id} key={index}>{name.name}</option>
-                        )}
-                    </select>
+                <select id="selectAddNodeName" onChange={handleNewNodeParent}>
+                    <option defaultValue="" >Wybierz element nadrzędny</option>
+                    {nodeNames?.map((name, index) => 
+                        <option value={name.id} key={index}>{name.name}</option>
+                    )}
+                </select>
             </Modal.Body>
             <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
@@ -199,7 +212,7 @@ const App = () => {
             </Modal.Header>
             <Modal.Body>
                 Wybierz element do edycji:
-                <select id="selectObstacleName" onChange={(e) => handleEditElement(e.target.value)}>
+                <select id="selectEditNodeName" onChange={(e) => handleEditElement(e.target.value)}>
                     <option defaultValue="" >Wybierz element do edycji</option>
                     {nodeNames?.map((name, index) => 
                         <option value={name.id} key={index}>{name.name}</option>
@@ -209,7 +222,7 @@ const App = () => {
                 Podaj nową nazwę:
                 <Form.Control type='text' id="editNodeName" value={nodeName} onChange={(e) => handleNewNodeName(e.target.value)} />
                 Wybierz element nadrzędny<br />
-                <select id="selectObstacleName" onChange={handleNewNodeParent}>
+                <select id="selectEditParentName" onChange={handleNewNodeParent}>
                     <option value={nodeParentId} >{parentNodeName}</option>
                     {nodeNames?.map((name, index) => 
                         <option value={name.id} key={index}>{name.name}</option>
@@ -235,7 +248,7 @@ const App = () => {
             </Modal.Header>
             <Modal.Body>
                 Wybierz element do usunięcia
-                <select id="selectObstacleName" onChange={(e) => handleEditDeletingId(e.target.value)}>
+                <select id="selectDeleteNodeName" onChange={(e) => handleEditDeletingId(e.target.value)}>
                     <option defaultValue="" >Wybierz element do edycji</option>
                     {nodeNames?.map((name, index) => 
                         <option value={name.id} key={index}>{name.name}</option>
@@ -249,12 +262,6 @@ const App = () => {
             <Button variant="danger"onClick={(e) => deleteNodeFromDB()}>Usuń</Button>
             </Modal.Footer>
         </Modal>
-
-        <div>
-          <Button variant='success' onClick={handleAddNode}>Dodaj element</Button>
-          <Button variant="warning" onClick={handleEditNode} >Edytuj element</Button>
-          <Button variant="danger" onClick={handleDeleteNode}>Usuń element</Button>
-        </div>
     </div>
   );
 }
