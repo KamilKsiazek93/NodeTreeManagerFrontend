@@ -1,8 +1,5 @@
 import React from "react";
 import { INodeTree } from "./Nodes";
-import { Button } from "react-bootstrap";
-import { handleShowHide } from "./ShowHide";
-import { handleSortNode } from "./Sort";
 
 export const NodeTree = (nodes:INodeTree) => {
   

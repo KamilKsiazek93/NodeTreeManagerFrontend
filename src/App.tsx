@@ -119,7 +119,7 @@ const App = () => {
     }
   }
 
-  const handleSort = () => {
+  const handleSortSelect = () => {
     let sortOption = document.getElementById('sortSelect') as HTMLInputElement
     if(sortOption.value !== "") {
       const findingNodeName = nodeNames?.filter(item => item.id === parseInt(sortOption.value))[0].name ?? ""
@@ -147,7 +147,7 @@ const App = () => {
           <Button variant="danger" onClick={handleDeleteNode}>Usuń element</Button>
         </div>
         <div>Wybierz węzeł do posortowania
-          <select id="sortSelect" onClick={handleSort}>
+          <select id="sortSelect" onClick={handleSortSelect}>
               <option defaultValue="" ></option>
               {nodeNames?.map((name, index) => 
                   <option value={name.id} key={index}>{name.name}</option>
@@ -186,12 +186,12 @@ const App = () => {
             <Modal.Body>
                 Podaj nazwę elementu:
                 <Form.Control type="text" onChange={(e) => handleNewNodeName(e.target.value)}/> <br />
-                <select id="selectObstacleName" onChange={handleNewNodeParent}>
-                        <option defaultValue="" >Wybierz element nadrzędny</option>
-                        {nodeNames?.map((name, index) => 
-                            <option value={name.id} key={index}>{name.name}</option>
-                        )}
-                    </select>
+                <select id="selectAddNodeName" onChange={handleNewNodeParent}>
+                    <option defaultValue="" >Wybierz element nadrzędny</option>
+                    {nodeNames?.map((name, index) => 
+                        <option value={name.id} key={index}>{name.name}</option>
+                    )}
+                </select>
             </Modal.Body>
             <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
@@ -212,7 +212,7 @@ const App = () => {
             </Modal.Header>
             <Modal.Body>
                 Wybierz element do edycji:
-                <select id="selectObstacleName" onChange={(e) => handleEditElement(e.target.value)}>
+                <select id="selectEditNodeName" onChange={(e) => handleEditElement(e.target.value)}>
                     <option defaultValue="" >Wybierz element do edycji</option>
                     {nodeNames?.map((name, index) => 
                         <option value={name.id} key={index}>{name.name}</option>
@@ -222,7 +222,7 @@ const App = () => {
                 Podaj nową nazwę:
                 <Form.Control type='text' id="editNodeName" value={nodeName} onChange={(e) => handleNewNodeName(e.target.value)} />
                 Wybierz element nadrzędny<br />
-                <select id="selectObstacleName" onChange={handleNewNodeParent}>
+                <select id="selectEditParentName" onChange={handleNewNodeParent}>
                     <option value={nodeParentId} >{parentNodeName}</option>
                     {nodeNames?.map((name, index) => 
                         <option value={name.id} key={index}>{name.name}</option>
@@ -248,7 +248,7 @@ const App = () => {
             </Modal.Header>
             <Modal.Body>
                 Wybierz element do usunięcia
-                <select id="selectObstacleName" onChange={(e) => handleEditDeletingId(e.target.value)}>
+                <select id="selectDeleteNodeName" onChange={(e) => handleEditDeletingId(e.target.value)}>
                     <option defaultValue="" >Wybierz element do edycji</option>
                     {nodeNames?.map((name, index) => 
                         <option value={name.id} key={index}>{name.name}</option>
