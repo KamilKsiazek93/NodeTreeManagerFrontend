@@ -119,6 +119,24 @@ const App = () => {
     }
   }
 
+  const handleSort = () => {
+    let sortOption = document.getElementById('sortSelect') as HTMLInputElement
+    if(sortOption.value !== "") {
+      const findingNodeName = nodeNames?.filter(item => item.id === parseInt(sortOption.value))[0].name ?? ""
+      handleSortNode(findingNodeName+sortOption.value)
+      sortOption.value = ""
+    }
+  }
+
+  const handleShowHideSelect = () => {
+    let showHideOption = document.getElementById('showHideSelect') as HTMLInputElement
+    if(showHideOption.value !== "") {
+      const findingNodeName = nodeNames?.filter(item => item.id === parseInt(showHideOption.value))[0].name ?? ""
+      handleShowHide(findingNodeName+showHideOption.value)
+      showHideOption.value = ""
+    }
+  }
+
   return (
     <div className="App">
       <h1>Tree manager</h1>
@@ -128,12 +146,28 @@ const App = () => {
           <Button variant="warning" onClick={handleEditNode} >Edytuj element</Button>
           <Button variant="danger" onClick={handleDeleteNode}>Usuń element</Button>
         </div>
+        <div>Wybierz węzeł do posortowania
+          <select id="sortSelect" onClick={handleSort}>
+              <option defaultValue="" ></option>
+              {nodeNames?.map((name, index) => 
+                  <option value={name.id} key={index}>{name.name}</option>
+              )}
+          </select>
+        </div>
+        <div id='showHide'>Wybierz węzeł do zwinięcia / rozwinięcia
+          <select id="showHideSelect" onChange={handleShowHideSelect}>
+              <option defaultValue="" ></option>
+              {nodeNames?.map((name, index) => 
+                  <option value={name.id} key={index}>{name.name}</option>
+              )}
+          </select>
+        </div>
         
           <ul>
           {nodes?.map((node) =>
             <li key={node.name}>
-              {node.name} {node.nodesChild.length > 0 && <Button onClick={(e) => handleShowHide(node.name+node.id.toString())} >Zwiń / Rozwiń</Button>}
-              {node.nodesChild.length > 0 && <Button onClick={(e) => handleSortNode(node.name)} >Sortuj</Button>}
+              {node.name}
+              
               {node.nodesChild.length > 0 && <NodeTree id={node.id} parentId={node.parentId} name={node.name} nodesChild={node.nodesChild} />}
             </li>
             )}
