@@ -116,6 +116,16 @@ const App = () => {
       },
       body: JSON.stringify(data)
     })
+    .then(response => {
+      let json = response.json()
+      return (response.status >= 200 && response.status < 300) ? json : json.then(Promise.reject.bind(Promise));
+    })
+    .then(result => {
+      setMessage(result.message)
+    })
+    .catch((error) => {
+      setMessage(error.message);
+    })
 
     handleCloseEdit()
     clearState()
