@@ -1,42 +1,64 @@
-.App {
-  
+body {
+  font-size: 18px;
+  font-family: 'Lato';
+  color: #FFE9FF;
+  background-color: blueviolet;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+div {
+  padding: 10px;
 }
 
 Button {
   margin: 10px;
+}
+
+.header {
+  text-align: center;
+}
+
+.panelButtons {
+  text-align: center;
+}
+
+.selectPanel {
+  text-align: center;
+}
+
+.form-control {
+  background-color: aqua;
+  border-radius: 10px;
+}
+
+.form-control:focus {
+  background-color: aqua;
+}
+
+.modal-content { 
+  background-color: blueviolet;
+}
+
+.messageApi {
+  padding: 20px;
+  font-weight: bold;
+  font-size: 22px;
+}
+
+.alertMessage {
+  margin: 10px;
+  font-weight: 500;
+}
+
+.rightMarginSpan {
+  margin-right: 15px;
+}
+
+.bothtMarginSpan {
+  margin-right: 15px;
+  margin-left: 15px;
+}
+
+select {
+  background-color: aqua;
+  border-radius: 10px;
 }
