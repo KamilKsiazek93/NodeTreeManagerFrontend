@@ -25,6 +25,7 @@ const App = () => {
   const handleCloseDelete = () => setShowDelete(false);
   const handleShowDelete = () => setShowDelete(true);
   const [stateUpdater, setStateUpdater] = useState(0)
+  const [message, setMessage] = useState<string>()
 
   useEffect(() => {
     const getData = async() => {
@@ -37,6 +38,13 @@ const App = () => {
     }
     getData()
   }, [stateUpdater])
+
+  const clearState = () => {
+    setNodeName("")
+    setParentNodeName("")
+    setNodeParentId(0)
+    setStateUpdater(stateUpdater+1)
+  }
 
   const handleNewNodeName = (name:string) => {
     setNodeName(name)
@@ -56,8 +64,11 @@ const App = () => {
       },
       body: JSON.stringify(data)
     })
+    .then(response => response.json())
+    .then(result => setMessage(result.message));
+
     handleClose()
-    setStateUpdater(stateUpdater+1)
+    clearState()
   }
 
   const handleAddNode = () => {
@@ -94,7 +105,7 @@ const App = () => {
     })
 
     handleCloseEdit()
-    setStateUpdater(stateUpdater+1)
+    clearState()
   }
 
   const handleDeleteNode = () => {
@@ -114,8 +125,10 @@ const App = () => {
         },
         body: JSON.stringify({id: nodeId})
       })
-      setStateUpdater(stateUpdater+1)
+      .then(response => response.json())
+      .then(result => setMessage(result.message));
       handleCloseDelete();
+      clearState()
     }
   }
 
@@ -146,6 +159,7 @@ const App = () => {
           <Button variant="warning" onClick={handleEditNode} >Edytuj element</Button>
           <Button variant="danger" onClick={handleDeleteNode}>Usuń element</Button>
         </div>
+        <div className="messageApi">{message}</div>
         <div>Wybierz węzeł do posortowania
           <select id="sortSelect" onClick={handleSortSelect}>
               <option defaultValue="" ></option>
@@ -249,11 +263,15 @@ const App = () => {
             <Modal.Body>
                 Wybierz element do usunięcia
                 <select id="selectDeleteNodeName" onChange={(e) => handleEditDeletingId(e.target.value)}>
-                    <option defaultValue="" >Wybierz element do edycji</option>
+                    <option defaultValue="" >Element do usunięcia</option>
                     {nodeNames?.map((name, index) => 
                         <option value={name.id} key={index}>{name.name}</option>
                     )}
                 </select>
+                <div className='alertMessage'>
+                  Pamiętaj, ze usunięcie elementu nadrzędnego pociąga za sobą usunięcie elementów pod nim. <br/>
+                  Jeśli chcesz zachować podrzędne elementy przenieś je przed usunięciem na inną gałąź.
+                </div>
             </Modal.Body>
             <Modal.Footer>
             <Button variant="secondary" onClick={handleCloseDelete}>

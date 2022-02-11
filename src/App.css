@@ -1,12 +1,3 @@
-.App {
-  
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -39,4 +30,14 @@
 
 Button {
   margin: 10px;
+}
+
+.messageApi {
+  padding: 20px;
+  font-weight: bold;
+}
+
+.alertMessage {
+  margin: 10px;
+  font-weight: 500;
 }
