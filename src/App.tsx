@@ -109,27 +109,29 @@ const App = () => {
   const editNodeToDB = async() => {
     const data:INodes = {id: nodeId, parentId: nodeParentId, name: nodeName};
 
-    await fetch(`${webAPIUrl}/nodes/${nodeId}`, {
-      method: 'put',
-      headers: {
-        'Content-Type': 'application/json', 
-      },
-      body: JSON.stringify(data)
-    })
-    .then(response => {
-      let json = response.json()
-      return (response.status >= 200 && response.status < 300) ? json : json.then(Promise.reject.bind(Promise));
-    })
-    .then(result => {
-      setMessage(result.message)
-    })
-    .catch((error) => {
-      setMessage(error.message);
-    })
-
-    handleCloseEdit()
-    clearState()
-    setStateUpdater(stateUpdater+1)
+    if(nodeId !== 0) {
+      await fetch(`${webAPIUrl}/nodes/${nodeId}`, {
+        method: 'put',
+        headers: {
+          'Content-Type': 'application/json', 
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        let json = response.json()
+        return (response.status >= 200 && response.status < 300) ? json : json.then(Promise.reject.bind(Promise));
+      })
+      .then(result => {
+        setMessage(result.message)
+      })
+      .catch((error) => {
+        setMessage(error.message);
+      })
+  
+      handleCloseEdit()
+      clearState()
+      setStateUpdater(stateUpdater+1)
+    }
   }
 
   const handleDeleteNode = () => {
@@ -209,7 +211,6 @@ const App = () => {
             </li>
             )}
           </ul>
-        
 
         <Modal
             show={show}
@@ -217,26 +218,26 @@ const App = () => {
             backdrop="static"
             keyboard={false}
         >
-            <Modal.Header closeButton>
-            <Modal.Title>Dodaj element</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                Podaj nazwę elementu:
-                <Form.Control type="text" onChange={(e) => handleNewNodeName(e.target.value)}/> <br />
-                <select id="selectAddNodeName" onChange={handleNewNodeParent}>
-                    <option defaultValue="" >Wybierz element nadrzędny</option>
-                    <option value={nodeParentId} >Brak elementu nadrzędnego</option>
-                    {nodeNames?.map((name, index) => 
-                        <option value={name.id} key={index}>{name.name}</option>
-                    )}
-                </select>
-            </Modal.Body>
-            <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-                Zamknij
-            </Button>
-            <Button variant="primary"onClick={(e) => addNodeToDB()}>Dodaj</Button>
-            </Modal.Footer>
+          <Modal.Header closeButton>
+          <Modal.Title>Dodaj element</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+              Podaj nazwę elementu:
+              <Form.Control type="text" onChange={(e) => handleNewNodeName(e.target.value)}/> <br />
+              <select id="selectAddNodeName" onChange={handleNewNodeParent}>
+                  <option defaultValue="" >Wybierz element nadrzędny</option>
+                  <option value={nodeParentId} >Brak elementu nadrzędnego</option>
+                  {nodeNames?.map((name, index) => 
+                      <option value={name.id} key={index}>{name.name}</option>
+                  )}
+              </select>
+          </Modal.Body>
+          <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+              Zamknij
+          </Button>
+          <Button variant="primary"onClick={(e) => addNodeToDB()}>Dodaj</Button>
+          </Modal.Footer>
         </Modal>
 
         <Modal
@@ -245,35 +246,35 @@ const App = () => {
             backdrop="static"
             keyboard={false}
         >
-            <Modal.Header closeButton>
-            <Modal.Title>Edytuj element</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                Wybierz element do edycji:
-                <select id="selectEditNodeName" onChange={(e) => handleEditElement(e.target.value)}>
-                    <option defaultValue="" >Wybierz element do edycji</option>
-                    {nodeNames?.map((name, index) => 
-                        <option value={name.id} key={index}>{name.name}</option>
-                    )}
-                </select>
-                <br/>
-                Podaj nową nazwę:
-                <Form.Control type='text' id="editNodeName" value={nodeName} onChange={(e) => handleNewNodeName(e.target.value)} />
-                Wybierz element nadrzędny<br />
-                <select id="selectEditParentName" onChange={handleNewNodeParent}>
-                    <option value={nodeParentId} >{parentNodeName}</option>
-                    <option value="0">Brak elementu nadrzędnego</option>
-                    {nodeNames?.map((name, index) => 
-                        <option value={name.id} key={index}>{name.name}</option>
-                    )}
-                </select>
-            </Modal.Body>
-            <Modal.Footer>
-            <Button variant="secondary" onClick={handleCloseEdit}>
-                Zamknij
-            </Button>
-            <Button variant="warning"onClick={(e) => editNodeToDB()}>Edytuj</Button>
-            </Modal.Footer>
+          <Modal.Header closeButton>
+          <Modal.Title>Edytuj element</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+              Wybierz element do edycji:
+              <select id="selectEditNodeName" onChange={(e) => handleEditElement(e.target.value)}>
+                  <option defaultValue="" >Wybierz element do edycji</option>
+                  {nodeNames?.map((name, index) => 
+                      <option value={name.id} key={index}>{name.name}</option>
+                  )}
+              </select>
+              <br/>
+              Podaj nową nazwę:
+              <Form.Control type='text' id="editNodeName" value={nodeName} onChange={(e) => handleNewNodeName(e.target.value)} />
+              Wybierz element nadrzędny<br />
+              <select id="selectEditParentName" onChange={handleNewNodeParent}>
+                  <option value={nodeParentId} >{parentNodeName}</option>
+                  <option value="0">Brak elementu nadrzędnego</option>
+                  {nodeNames?.map((name, index) => 
+                      <option value={name.id} key={index}>{name.name}</option>
+                  )}
+              </select>
+          </Modal.Body>
+          <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseEdit}>
+              Zamknij
+          </Button>
+          <Button variant="warning"onClick={(e) => editNodeToDB()}>Edytuj</Button>
+          </Modal.Footer>
         </Modal>
 
         <Modal
@@ -282,28 +283,28 @@ const App = () => {
             backdrop="static"
             keyboard={false}
         >
-            <Modal.Header closeButton>
-            <Modal.Title>Usuń element</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                Wybierz element do usunięcia
-                <select id="selectDeleteNodeName" onChange={(e) => handleEditDeletingId(e.target.value)}>
-                    <option defaultValue="" >Element do usunięcia</option>
-                    {nodeNames?.map((name, index) => 
-                        <option value={name.id} key={index}>{name.name}</option>
-                    )}
-                </select>
-                <div className='alertMessage'>
-                  Pamiętaj, ze usunięcie elementu nadrzędnego pociąga za sobą usunięcie elementów pod nim. <br/>
-                  Jeśli chcesz zachować podrzędne elementy przenieś je przed usunięciem na inną gałąź.
-                </div>
-            </Modal.Body>
-            <Modal.Footer>
-            <Button variant="secondary" onClick={handleCloseDelete}>
-                Zamknij
-            </Button>
-            <Button variant="danger"onClick={(e) => deleteNodeFromDB()}>Usuń</Button>
-            </Modal.Footer>
+          <Modal.Header closeButton>
+          <Modal.Title>Usuń element</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+              Wybierz element do usunięcia
+              <select id="selectDeleteNodeName" onChange={(e) => handleEditDeletingId(e.target.value)}>
+                  <option defaultValue="" >Element do usunięcia</option>
+                  {nodeNames?.map((name, index) => 
+                      <option value={name.id} key={index}>{name.name}</option>
+                  )}
+              </select>
+              <div className='alertMessage'>
+                Pamiętaj, ze usunięcie elementu nadrzędnego pociąga za sobą usunięcie elementów pod nim. <br/>
+                Jeśli chcesz zachować podrzędne elementy przenieś je przed usunięciem na inną gałąź.
+              </div>
+          </Modal.Body>
+          <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseDelete}>
+              Zamknij
+          </Button>
+          <Button variant="danger"onClick={(e) => deleteNodeFromDB()}>Usuń</Button>
+          </Modal.Footer>
         </Modal>
     </div>
   );
