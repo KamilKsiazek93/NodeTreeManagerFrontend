@@ -16,13 +16,10 @@ const App = () => {
   const [parentNodeName, setParentNodeName] = useState("")
   const [nodeId, setNodeId] = useState(0)
   const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [showEdit, setShowEdit] = useState(false);
-  const handleCloseEdit = () => setShowEdit(false);
   const handleShowEdit = () => setShowEdit(true);
   const [showDelete, setShowDelete] = useState(false);
-  const handleCloseDelete = () => setShowDelete(false);
   const handleShowDelete = () => setShowDelete(true);
   const [stateUpdater, setStateUpdater] = useState(0)
   const [message, setMessage] = useState<string>()
@@ -39,11 +36,26 @@ const App = () => {
     getData()
   }, [stateUpdater])
 
+  const handleClose = () => {
+    setShow(false)
+    clearState()
+  }
+
+  const handleCloseEdit = () => {
+    setShowEdit(false)
+    clearState()
+  }
+
+  const handleCloseDelete = () => {
+    setShowDelete(false)
+    clearState()
+  }
+
   const clearState = () => {
     setNodeName("")
     setParentNodeName("")
     setNodeParentId(0)
-    setStateUpdater(stateUpdater+1)
+    setNodeId(0)
   }
 
   const handleNewNodeName = (name:string) => {
@@ -69,6 +81,7 @@ const App = () => {
 
     handleClose()
     clearState()
+    setStateUpdater(stateUpdater+1)
   }
 
   const handleAddNode = () => {
@@ -106,6 +119,7 @@ const App = () => {
 
     handleCloseEdit()
     clearState()
+    setStateUpdater(stateUpdater+1)
   }
 
   const handleDeleteNode = () => {
@@ -129,6 +143,7 @@ const App = () => {
       .then(result => setMessage(result.message));
       handleCloseDelete();
       clearState()
+      setStateUpdater(stateUpdater+1)
     }
   }
 
@@ -202,6 +217,7 @@ const App = () => {
                 <Form.Control type="text" onChange={(e) => handleNewNodeName(e.target.value)}/> <br />
                 <select id="selectAddNodeName" onChange={handleNewNodeParent}>
                     <option defaultValue="" >Wybierz element nadrzędny</option>
+                    <option value={nodeParentId} >Brak elementu nadrzędnego</option>
                     {nodeNames?.map((name, index) => 
                         <option value={name.id} key={index}>{name.name}</option>
                     )}
@@ -238,6 +254,7 @@ const App = () => {
                 Wybierz element nadrzędny<br />
                 <select id="selectEditParentName" onChange={handleNewNodeParent}>
                     <option value={nodeParentId} >{parentNodeName}</option>
+                    <option value="0">Brak elementu nadrzędnego</option>
                     {nodeNames?.map((name, index) => 
                         <option value={name.id} key={index}>{name.name}</option>
                     )}
