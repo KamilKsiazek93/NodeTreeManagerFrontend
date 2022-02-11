@@ -167,23 +167,21 @@ const App = () => {
 
   return (
     <div className="App">
-      <h1>Tree manager</h1>
+      <h1 className="header">Tree manager</h1>
 
-        <div>
+        <div className='panelButtons'>
           <Button variant='success' onClick={handleAddNode}>Dodaj element</Button>
           <Button variant="warning" onClick={handleEditNode} >Edytuj element</Button>
           <Button variant="danger" onClick={handleDeleteNode}>Usuń element</Button>
         </div>
-        <div className="messageApi">{message}</div>
-        <div>Wybierz węzeł do posortowania
+        <div className='selectPanel'><span className='rightMarginSpan'>Wybierz węzeł do posortowania</span>
           <select id="sortSelect" onClick={handleSortSelect}>
               <option defaultValue="" ></option>
               {nodeNames?.map((name, index) => 
                   <option value={name.id} key={index}>{name.name}</option>
               )}
           </select>
-        </div>
-        <div id='showHide'>Wybierz węzeł do zwinięcia / rozwinięcia
+        <span className='bothtMarginSpan'>Wybierz węzeł do zwinięcia / rozwinięcia</span>
           <select id="showHideSelect" onChange={handleShowHideSelect}>
               <option defaultValue="" ></option>
               {nodeNames?.map((name, index) => 
@@ -191,7 +189,7 @@ const App = () => {
               )}
           </select>
         </div>
-        
+        <div className="messageApi">{message}</div>
           <ul>
           {nodes?.map((node) =>
             <li key={node.name}>
